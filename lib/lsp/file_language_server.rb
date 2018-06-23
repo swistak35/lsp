@@ -51,6 +51,7 @@ module Lsp
 
     def response(id, result, error)
       payload = {
+        jsonrpc: "2.0",
         id: id,
         result: result,
         error: error,

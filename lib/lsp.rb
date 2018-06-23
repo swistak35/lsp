@@ -1,10 +1,41 @@
 module Lsp
   TextDocumentIdentifier = Struct.new(:uri)
 
-  TextDocumentHoverRequest = Struct.new(:text_document, :position)
+  TextDocumentPositionParams = Struct.new(:text_document, :position)
   InitializeRequest = Struct.new(:root_uri)
 
-  NoopResponse = Struct.new(:result, :error)
+  Position = Struct.new(:line, :character)
+  Range = Struct.new(:start, :end) do
+    def to_h
+      {
+        start: start.to_h,
+        end: self.end.to_h,
+      }
+    end
+  end
+  Location = Struct.new(:uri, :range) do
+    def to_h
+      {
+        uri: uri,
+        range: range.to_h,
+      }
+    end
+  end
+
+  ResponseMessage = Struct.new(:result, :error) do
+    def self.successful(result)
+      new(result, nil)
+    end
+  end
+
+  TextDocumentHoverResult = Struct.new(:contents) do
+    def to_h
+      {
+        contents: self.contents,
+        range: nil,
+      }
+    end
+  end
 
   module ResponseError
     class Base
@@ -39,7 +70,13 @@ module Lsp
       response = case method_name
       when "textDocument/hover"
         handle_text_document_hover(
-          TextDocumentHoverRequest.new(
+          TextDocumentPositionParams.new(
+            TextDocumentIdentifier.new(
+              params.fetch(:textDocument)),
+            params.fetch(:position)))
+      when "textDocument/definition"
+        handle_text_document_definition(
+          TextDocumentPositionParams.new(
             TextDocumentIdentifier.new(
               params.fetch(:textDocument)),
             params.fetch(:position)))
@@ -48,11 +85,14 @@ module Lsp
           InitializeRequest.new(
             params.fetch(:rootUri)))
       else
-        NoopResponse.new(nil, ResponseError::MethodNotFound.new)
+        ResponseMessage.new(nil, ResponseError::MethodNotFound.new)
       end
-      @language_server.response(id, response.result, response.error.to_h)
+      @language_server.response(
+        id,
+        response.result ? response.result.to_h : nil,
+        response.error ? response.error.to_h : nil)
     rescue NotImplementedError
-      NoopResponse.new(nil, ResponseError::MethodNotFound.new)
+      ResponseMessage.new(nil, ResponseError::MethodNotFound.new)
     end
 
     def notify(method_name, params)
@@ -66,6 +106,10 @@ module Lsp
     attr_writer :language_server
 
     def handle_text_document_hover(request)
+      raise NotImplementedError
+    end
+
+    def handle_text_document_definition(request)
       raise NotImplementedError
     end
 
