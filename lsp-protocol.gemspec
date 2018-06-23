@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = "Language Server Protocol implementation"
   spec.description   = "A simple hello world gem"
-  spec.homepage      = 'https://github.com/swistak35/language_server_protocol'
+  spec.homepage      = 'https://github.com/swistak35/lsp'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.require_paths = ['lib']
