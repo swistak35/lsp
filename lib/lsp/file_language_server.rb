@@ -1,11 +1,13 @@
 require 'json'
+require 'logger'
 
 module Lsp
   class FileLanguageServer
-    def initialize(implementation, input = $stdin, output = $stdout)
+    def initialize(implementation, input = $stdin, output = $stdout, logger: Logger.new(nil))
       @implementation = implementation
       @input = input
       @output = output
+      @logger = logger
     end
 
     def start
@@ -28,10 +30,17 @@ module Lsp
 
         body_raw = input.read(headers["Content-Length"].to_i)
         body_json = JSON.parse(body_raw, symbolize_names: true)
-        implementation.request(
-          body_json.fetch(:id),
-          body_json.fetch(:method),
-          body_json.fetch(:params))
+        logger.info("RECV #{body_json}")
+        if body_json[:id]
+          implementation.request(
+            body_json.fetch(:id),
+            body_json.fetch(:method),
+            body_json.fetch(:params))
+        else
+          implementation.notify(
+            body_json.fetch(:method),
+            body_json.fetch(:params))
+        end
       end
     rescue EOFError
     end
@@ -41,11 +50,13 @@ module Lsp
     end
 
     def response(id, result, error)
-      output.write(build_message({
+      payload = {
         id: id,
         result: result,
         error: error,
-      }))
+      }
+      output.write(build_message(payload))
+      logger.info("SEND #{payload}")
     end
 
     def build_message(hash)
@@ -53,6 +64,6 @@ module Lsp
       "Content-Length: #{json.size}\r\n\r\n#{json}"
     end
 
-    attr_reader :implementation, :input, :output
+    attr_reader :implementation, :input, :output, :logger
   end
 end
