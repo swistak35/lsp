@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    lsp (0.0.1)
+    lsp-protocol (0.0.1)
 
 GEM
   remote: https://rubygems.org/
@@ -28,7 +28,7 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 1.9)
   byebug
-  lsp!
+  lsp-protocol!
   rspec (~> 3.5.0)
 
 BUNDLED WITH
