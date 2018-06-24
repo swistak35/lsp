@@ -57,6 +57,7 @@ module Lsp
         error: error,
       }
       output.write(build_message(payload))
+      output.flush
       logger.info("SEND #{payload}")
     end
 
