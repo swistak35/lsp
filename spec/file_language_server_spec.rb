@@ -131,9 +131,9 @@ Content-Length: 423
       server.start
 
       expected_output = <<-LSP.strip
-Content-Length: 54\r
+Content-Length: 70\r
 \r
-{"id":42,"result":{"foo":"bar"},"error":{"code":-234}}
+{"jsonrpc":"2.0","id":42,"result":{"foo":"bar"},"error":{"code":-234}}
       LSP
 
       output.rewind
