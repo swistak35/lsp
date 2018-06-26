@@ -4,7 +4,11 @@ module Lsp
   TextDocumentPositionParams = Struct.new(:text_document, :position)
   InitializeRequest = Struct.new(:root_uri)
 
-  Position = Struct.new(:line, :character)
+  Position = Struct.new(:line, :character) do
+    def self.from_hash(line:, character:)
+      new(line, character)
+    end
+  end
   Range = Struct.new(:start, :end) do
     def to_h
       {
@@ -71,9 +75,8 @@ module Lsp
       when "textDocument/hover"
         handle_text_document_hover(
           TextDocumentPositionParams.new(
-            TextDocumentIdentifier.new(
-              params.fetch(:textDocument)),
-            params.fetch(:position)))
+            TextDocumentIdentifier.new(params.fetch(:textDocument).fetch(:uri)),
+            Position.from_hash(params.fetch(:position))))
       when "textDocument/definition"
         handle_text_document_definition(
           TextDocumentPositionParams.new(
