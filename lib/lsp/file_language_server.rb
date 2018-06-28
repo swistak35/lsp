@@ -25,13 +25,13 @@ module Lsp
             end
           end
           header_name, header_value = header_line.split(":", 2)
-          headers[header_name.strip] = header_value.strip
+          headers[header_name] = header_value.strip
         end
 
         body_raw = input.read(headers["Content-Length"].to_i)
         body_json = JSON.parse(body_raw, symbolize_names: true)
         logger.info("RECV #{body_json}")
-        if body_json[:id]
+        if body_json.key?(:id)
           implementation.request(
             body_json.fetch(:id),
             body_json.fetch(:method),

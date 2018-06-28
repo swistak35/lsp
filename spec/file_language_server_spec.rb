@@ -18,17 +18,7 @@ module Lsp
       server = FileLanguageServer.new(implementation, input, output)
 
       expect(implementation).to receive(:request).with(42, "someMethod", { foo: 13 })
-      input.print <<-LSP
-Content-Length: 423\r
-
-{
-  "id": 42,
-  "method": "someMethod",
-  "params": {
-    "foo": 13
-  }
-}
-      LSP
+      input.print("Content-Length: 423\r\n\n{\"id\":42,\"method\":\"someMethod\",\"params\":{\"foo\":13}}")
 
       input.rewind
       server.start
@@ -90,6 +80,26 @@ Content-Length: #{msg1.size}
 Content-Length: #{msg2.size}
 
 #{msg2}
+      LSP
+
+      input.rewind
+      server.start
+    end
+
+    specify "notification" do
+      allow(implementation).to receive(:language_server=)
+      server = FileLanguageServer.new(implementation, input, output)
+
+      expect(implementation).to receive(:notify).with("someMethod", { foo: 13 })
+      input.print <<-LSP
+      Content-Length: 423\r
+
+      {
+        "method": "someMethod",
+        "params": {
+          "foo": 13
+        }
+      }
       LSP
 
       input.rewind
