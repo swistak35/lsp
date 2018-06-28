@@ -4,4 +4,6 @@ matrix:
     - rvm: 2.3.7
     - rvm: 2.4.4
     - rvm: 2.5.1
-script: make test
+script:
+  - make test
+  - make mutate

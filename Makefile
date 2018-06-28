@@ -1,5 +1,5 @@
 test:
 	@bundle exec rspec spec
 
-mutant:
+mutate:
 	@bundle exec mutant --include lib --require lsp --use rspec "Lsp::FileLanguageServer"
