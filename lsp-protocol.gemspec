@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = 'lsp-protocol'
-  spec.version       = '0.0.1'
+  spec.version       = '0.0.2'
   spec.licenses      = ['MIT']
   spec.authors       = ['Rafał Łasocha']
   spec.email         = 'lsp@swistak35.com'
@@ -19,4 +19,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 1.9'
   spec.add_development_dependency 'rspec', '~> 3.5.0'
   spec.add_development_dependency 'byebug'
+  spec.add_development_dependency 'mutant-rspec'
 end
