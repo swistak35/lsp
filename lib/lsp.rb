@@ -92,8 +92,8 @@ module Lsp
       end
       @language_server.response(
         id,
-        response.result ? response.result.to_h : nil,
-        response.error ? response.error.to_h : nil)
+        to_result(response.result),
+        to_result(response.error))
     rescue NotImplementedError
       ResponseMessage.new(nil, ResponseError::MethodNotFound.new)
     end
@@ -104,6 +104,17 @@ module Lsp
         handle_text_document_did_open
       end
     rescue NotImplementedError
+    end
+
+    def to_result(obj)
+      case obj
+      when Array
+        obj.map {|elem| to_result(elem) }
+      when NilClass
+        nil
+      else
+        obj.to_h
+      end
     end
 
     attr_writer :language_server
