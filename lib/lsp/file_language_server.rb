@@ -43,6 +43,8 @@ module Lsp
         end
       end
     rescue EOFError
+    rescue => e
+      logger.error("Server failed because of #{e}")
     end
 
     def prepare
