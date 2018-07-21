@@ -81,8 +81,8 @@ module Lsp
         handle_text_document_definition(
           TextDocumentPositionParams.new(
             TextDocumentIdentifier.new(
-              params.fetch(:textDocument)),
-            params.fetch(:position)))
+                  URI(params.fetch(:textDocument).fetch(:uri))),
+            Position.from_hash(params.fetch(:position))))
       when "initialize"
         handle_initialize(
           InitializeRequest.new(
