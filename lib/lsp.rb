@@ -75,18 +75,19 @@ module Lsp
       when "textDocument/hover"
         handle_text_document_hover(
           TextDocumentPositionParams.new(
-            TextDocumentIdentifier.new(params.fetch(:textDocument).fetch(:uri)),
+            TextDocumentIdentifier.new(
+              URI(params.fetch(:textDocument).fetch(:uri))),
             Position.from_hash(params.fetch(:position))))
       when "textDocument/definition"
         handle_text_document_definition(
           TextDocumentPositionParams.new(
             TextDocumentIdentifier.new(
-                  URI(params.fetch(:textDocument).fetch(:uri))),
+              URI(params.fetch(:textDocument).fetch(:uri))),
             Position.from_hash(params.fetch(:position))))
       when "initialize"
         handle_initialize(
           InitializeRequest.new(
-            params.fetch(:rootUri)))
+            URI(params.fetch(:rootUri))))
       else
         ResponseMessage.new(nil, ResponseError::MethodNotFound.new)
       end
