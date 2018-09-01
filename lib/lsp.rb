@@ -3,6 +3,22 @@ module Lsp
 
   TextDocumentPositionParams = Struct.new(:text_document, :position)
   InitializeRequest = Struct.new(:root_uri)
+  CompletionItem = Struct.new(:label, :text_edit) do
+    def to_h
+      {
+        label: label,
+        textEdit: text_edit.to_h,
+      }
+    end
+  end
+  TextEdit = Struct.new(:range, :new_text) do
+    def to_h
+      {
+        range: range.to_h,
+        newText: new_text,
+      }
+    end
+  end
 
   Position = Struct.new(:line, :character) do
     def self.from_hash(line:, character:)
@@ -29,6 +45,10 @@ module Lsp
   ResponseMessage = Struct.new(:result, :error) do
     def self.successful(result)
       new(result, nil)
+    end
+
+    def self.error(error)
+      new(error, nil)
     end
   end
 
@@ -88,6 +108,12 @@ module Lsp
         handle_initialize(
           InitializeRequest.new(
             URI(params.fetch(:rootUri))))
+      when "textDocument/completion"
+        handle_text_document_completion(
+          TextDocumentPositionParams.new(
+            TextDocumentIdentifier.new(
+              URI(params.fetch(:textDocument).fetch(:uri))),
+            Position.from_hash(params.fetch(:position))))
       else
         ResponseMessage.new(nil, ResponseError::MethodNotFound.new)
       end
