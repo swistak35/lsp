@@ -1,6 +1,9 @@
 module Lsp
   TextDocumentIdentifier = Struct.new(:uri)
 
+  DidChangeTextDocumentParams = Struct.new(:text_document, :content_changes)
+  TextDocumentContentChangeEvent = Struct.new(:text)
+  VersionedTextDocumentIdentifier = Struct.new(:uri, :version)
   TextDocumentPositionParams = Struct.new(:text_document, :position)
   InitializeRequest = Struct.new(:root_uri)
   CompletionItem = Struct.new(:label, :text_edit) do
@@ -114,6 +117,17 @@ module Lsp
             TextDocumentIdentifier.new(
               URI(params.fetch(:textDocument).fetch(:uri))),
             Position.from_hash(params.fetch(:position))))
+      when "textDocument/didChange"
+        handle_text_document_did_change(
+          DidChangeTextDocumentParams.new(
+            VersionedTextDocumentIdentifier.new(
+              URI(params.fetch(:textDocument).fetch(:uri)),
+              params.fetch(:textDocument).fetch(:version)),
+            params.fetch(:contentChanges).map do |contentChange|
+              next if contentChange[:range]
+              TextDocumentContentChangeEvent.new(
+                contentChange.fetch(:text))
+            end.compact))
       else
         ResponseMessage.new(nil, ResponseError::MethodNotFound.new)
       end

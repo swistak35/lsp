@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = 'lsp-protocol'
-  spec.version       = '0.0.4'
+  spec.version       = '0.0.5'
   spec.licenses      = ['MIT']
   spec.authors       = ['Rafał Łasocha']
   spec.email         = 'lsp@swistak35.com'

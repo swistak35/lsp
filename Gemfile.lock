@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    lsp-protocol (0.0.2)
+    lsp-protocol (0.0.5)
 
 GEM
   remote: https://rubygems.org/
@@ -91,4 +91,4 @@ DEPENDENCIES
   rspec (~> 3.5.0)
 
 BUNDLED WITH
-   1.16.1
+   1.16.3
