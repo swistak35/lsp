@@ -116,17 +116,6 @@ module Lsp
             TextDocumentIdentifier.new(
               URI(params.fetch(:textDocument).fetch(:uri))),
             Position.from_hash(params.fetch(:position))))
-      when "textDocument/didChange"
-        handle_text_document_did_change(
-          DidChangeTextDocumentParams.new(
-            VersionedTextDocumentIdentifier.new(
-              URI(params.fetch(:textDocument).fetch(:uri)),
-              params.fetch(:textDocument).fetch(:version)),
-            params.fetch(:contentChanges).map do |contentChange|
-              next if contentChange[:range]
-              TextDocumentContentChangeEvent.new(
-                contentChange.fetch(:text))
-            end.compact))
       else
         ResponseMessage.new(nil, ResponseError::MethodNotFound.new)
       end
@@ -142,6 +131,17 @@ module Lsp
       case method_name
       when "textDocument/didOpen"
         handle_text_document_did_open
+      when "textDocument/didChange"
+        handle_text_document_did_change(
+          DidChangeTextDocumentParams.new(
+            VersionedTextDocumentIdentifier.new(
+              URI(params.fetch(:textDocument).fetch(:uri)),
+              params.fetch(:textDocument).fetch(:version)),
+            params.fetch(:contentChanges).map do |contentChange|
+              next if contentChange[:range]
+              TextDocumentContentChangeEvent.new(
+                contentChange.fetch(:text))
+            end.compact))
       end
     rescue NotImplementedError
     end
