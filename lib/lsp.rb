@@ -6,11 +6,10 @@ module Lsp
   VersionedTextDocumentIdentifier = Struct.new(:uri, :version)
   TextDocumentPositionParams = Struct.new(:text_document, :position)
   InitializeRequest = Struct.new(:root_uri)
-  CompletionItem = Struct.new(:label, :text_edit) do
+  CompletionItem = Struct.new(:label) do
     def to_h
       {
         label: label,
-        textEdit: text_edit.to_h,
       }
     end
   end
