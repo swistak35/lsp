@@ -6,4 +6,4 @@ matrix:
     - rvm: 2.5.1
 script:
   - make test
-  - make mutate
+  # - make mutate
